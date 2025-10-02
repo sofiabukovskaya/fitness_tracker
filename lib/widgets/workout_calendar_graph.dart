@@ -50,15 +50,15 @@ class WorkoutCalendarGraph extends StatelessWidget {
                     child: Container(
                       margin: const EdgeInsets.all(1),
                       decoration: BoxDecoration(
-                        color: 2 > 0
+                        color: 2 <= 0
                             ? Theme.of(context)
                             .colorScheme
-                            .primary
-                            .withOpacity(opacity)
+                            .onSurface
+                            .withOpacity(0.1)
                             : Theme.of(context)
                             .colorScheme
-                            .onSurface
-                            .withOpacity(0.1),
+                            .primary
+                            .withOpacity(opacity),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

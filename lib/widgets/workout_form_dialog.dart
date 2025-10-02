@@ -76,7 +76,7 @@ class _WorkoutFormDialogState extends State<WorkoutFormDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<WorkoutType>(
-              value: selectedType,
+              initialValue: selectedType,
               onChanged: (value) {
                 if (value != null) {
                   setState(() {
