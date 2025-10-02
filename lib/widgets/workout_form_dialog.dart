@@ -9,7 +9,7 @@ class WorkoutFormDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formKey = useMemoized(() => GlobalKey<FormState>());
+    final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameController = useTextEditingController();
     final weightController = useTextEditingController();
     final repsController = useTextEditingController();

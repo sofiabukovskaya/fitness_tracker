@@ -9,11 +9,9 @@ class WorkoutListScreen extends StatelessWidget {
   const WorkoutListScreen({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context) {
     return Consumer(
-      builder: (_, ref, __)  {
+      builder: (_, ref, __) {
         ref.watch(workoutProvider);
         return DefaultTabController(
           length: 2,
@@ -32,19 +30,11 @@ class WorkoutListScreen extends StatelessWidget {
               ),
               bottom: const PreferredSize(
                 preferredSize: Size.fromHeight(48),
-                child: TabBar(
-                  tabs: [
-                    Tab(text: 'Upper Body'),
-                    Tab(text: 'Lower Body'),
-                  ],
-                ),
+                child: TabBar(tabs: [Tab(text: 'Upper Body'), Tab(text: 'Lower Body')]),
               ),
             ),
             body: const TabBarView(
-              children: [
-                _WorkoutList(type: WorkoutType.upperBody),
-                _WorkoutList(type: WorkoutType.lowerBody),
-              ],
+              children: [_WorkoutList(type: WorkoutType.upperBody), _WorkoutList(type: WorkoutType.lowerBody)],
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () => _showAddWorkoutDialog(context),
@@ -52,49 +42,61 @@ class WorkoutListScreen extends StatelessWidget {
             ),
           ),
         );
-      }
+      },
     );
   }
 
   void _showAddWorkoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => const WorkoutFormDialog(),
-    );
+    showDialog(context: context, builder: (context) => const WorkoutFormDialog());
   }
 }
 
-class _WorkoutList extends StatelessWidget {
+class _WorkoutList extends ConsumerWidget {
   final WorkoutType type;
 
   const _WorkoutList({required this.type});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unfilteredWorkout = ref.watch(workoutProvider);
+    final workouts = unfilteredWorkout.where((w) => w.type == type).toList();
+
+    if (workouts.isEmpty) {
+      return const Center(child: Text('No workouts added yet.', style: TextStyle(color: Colors.grey)));
+    }
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: 2,
+      itemCount: workouts.length,
       itemBuilder: (context, index) {
+        final workout = workouts[index];
         return Card(
           child: ListTile(
             enabled: false,
-            title: const Text(
-              "workout 1",
+            title: Text(
+              workout.name,
               style: TextStyle(
-                color: Colors.grey,
+                color: workout.isCompleted ? Colors.grey : Colors.white,
+                decoration: workout.isCompleted ? TextDecoration.lineThrough : null,
               ),
             ),
-            subtitle: const Text(
-              '1 sets',
+            subtitle: Text(
+              '${workout.sets} sets x ${workout.reps} reps at ${workout.weight} kg',
               style: TextStyle(
-                color: Colors.grey,
+                color: workout.isCompleted ? Colors.grey : Colors.white,
+                decoration: workout.isCompleted ? TextDecoration.lineThrough : null,
               ),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Checkbox(value: false, onChanged: (_) {}),
-                IconButton(icon: const Icon(Icons.delete), onPressed: () {}),
+                Checkbox(
+                  value: workout.isCompleted,
+                  onChanged: (_) => ref.read(workoutProvider.notifier).toggleWorkoutStatus(workout.id),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => ref.read(workoutProvider.notifier).removeWorkout(workout.id),
+                ),
               ],
             ),
           ),
