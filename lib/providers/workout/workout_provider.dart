@@ -2,7 +2,7 @@ import 'package:fitness_tracker/models/workout.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../enums/workout_type.dart';
+import 'package:fitness_tracker/enums/workout_type.dart';
 
 part 'workout_provider.g.dart';
 

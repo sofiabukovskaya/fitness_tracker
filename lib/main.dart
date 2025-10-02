@@ -1,18 +1,31 @@
+import 'package:fitness_tracker/providers/onboarding/onboarding_provider.dart';
+import 'package:fitness_tracker/screens/workout_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/onboarding_screen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+
+  final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
   runApp(
-    const MyApp(),
+    ProviderScope(
+      overrides: [hasSeenOnboardingProvider.overrideWith((ref) => hasSeenOnboarding)],
+      child: const MyApp(),
+    ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final hasSeenOnboarding = ref.read(hasSeenOnboardingProvider);
+
     return MaterialApp(
       title: 'Fitness Tracker',
       theme: ThemeData(
@@ -24,17 +37,12 @@ class MyApp extends StatelessWidget {
           surface: Color(0xFF1A237E),
           onSurface: Colors.white,
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1A237E),
-          elevation: 0,
-        ),
+        appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF1A237E), elevation: 0),
         scaffoldBackgroundColor: const Color(0xFF0D1344),
         cardTheme: CardThemeData(
           color: const Color(0xFF1A237E),
           elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         tabBarTheme: const TabBarThemeData(
           labelColor: Colors.white,
@@ -46,7 +54,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Color(0xFF1A237E),
         ),
       ),
-      home: const OnboardingScreen(),
+      home: hasSeenOnboarding ? const WorkoutListScreen() : const OnboardingScreen(),
     );
   }
 }

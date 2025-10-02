@@ -1,6 +1,8 @@
+import 'package:fitness_tracker/core/constants.dart';
 import 'package:fitness_tracker/screens/workout_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -34,8 +36,14 @@ class OnboardingScreen extends StatelessWidget {
   }
 
   void _onDone(BuildContext context) async {
+    await _markOnboardingComplete();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const WorkoutListScreen()),
     );
+  }
+
+  Future<void> _markOnboardingComplete() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(hasOnboardingInitialized, true);
   }
 }
