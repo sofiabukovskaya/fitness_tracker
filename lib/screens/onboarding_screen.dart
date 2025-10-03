@@ -14,7 +14,7 @@ class OnboardingScreen extends StatelessWidget {
         PageViewModel(
           title: 'Track Your Workouts',
           body:
-          'Keep track of your exercises, sets, and reps all in one place.',
+              'Keep track of your exercises, sets, and reps all in one place.',
           image: const FlutterLogo(size: 100),
         ),
         PageViewModel(

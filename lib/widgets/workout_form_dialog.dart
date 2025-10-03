@@ -24,7 +24,9 @@ class WorkoutFormDialog extends HookConsumerWidget {
         final sets = int.tryParse(setsController.text) ?? 0;
         final type = selectedType.value;
 
-        ref.read(workoutProvider.notifier).addWorkout(name, weight, reps, sets, type);
+        ref
+            .read(workoutProvider.notifier)
+            .addWorkout(name, weight, reps, sets, type);
 
         Navigator.of(context).pop();
       }
@@ -40,25 +42,33 @@ class WorkoutFormDialog extends HookConsumerWidget {
             TextFormField(
               controller: nameController,
               decoration: const InputDecoration(labelText: 'Name'),
-              validator: (value) => value?.isEmpty ?? true ? 'Please enter a name' : null,
+              validator:
+                  (value) =>
+                      value?.isEmpty ?? true ? 'Please enter a name' : null,
             ),
             TextFormField(
               controller: weightController,
               decoration: const InputDecoration(labelText: 'Weight (kg)'),
               keyboardType: TextInputType.number,
-              validator: (value) => value?.isEmpty ?? true ? 'Please enter weight' : null,
+              validator:
+                  (value) =>
+                      value?.isEmpty ?? true ? 'Please enter weight' : null,
             ),
             TextFormField(
               controller: repsController,
               decoration: const InputDecoration(labelText: 'Reps'),
               keyboardType: TextInputType.number,
-              validator: (value) => value?.isEmpty ?? true ? 'Please enter reps' : null,
+              validator:
+                  (value) =>
+                      value?.isEmpty ?? true ? 'Please enter reps' : null,
             ),
             TextFormField(
               controller: setsController,
               decoration: const InputDecoration(labelText: 'Sets'),
               keyboardType: TextInputType.number,
-              validator: (value) => value?.isEmpty ?? true ? 'Please enter sets' : null,
+              validator:
+                  (value) =>
+                      value?.isEmpty ?? true ? 'Please enter sets' : null,
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<WorkoutType>(
@@ -69,15 +79,24 @@ class WorkoutFormDialog extends HookConsumerWidget {
                 }
               },
               items: const [
-                DropdownMenuItem(value: WorkoutType.upperBody, child: Text('Upper Body')),
-                DropdownMenuItem(value: WorkoutType.lowerBody, child: Text('Lower Body')),
+                DropdownMenuItem(
+                  value: WorkoutType.upperBody,
+                  child: Text('Upper Body'),
+                ),
+                DropdownMenuItem(
+                  value: WorkoutType.lowerBody,
+                  child: Text('Lower Body'),
+                ),
               ],
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
         TextButton(onPressed: submit, child: const Text('Add')),
       ],
     );

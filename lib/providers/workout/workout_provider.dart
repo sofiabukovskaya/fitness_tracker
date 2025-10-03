@@ -1,4 +1,4 @@
-import 'package:fitness_tracker/models/workout.dart';
+import 'package:fitness_tracker/models/workout/workout.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,7 +15,13 @@ class WorkoutNotifier extends _$WorkoutNotifier {
     return [];
   }
 
-  void addWorkout(String name, double weight, int reps, int sets, WorkoutType type) {
+  void addWorkout(
+    String name,
+    double weight,
+    int reps,
+    int sets,
+    WorkoutType type,
+  ) {
     final newWorkout = Workout(
       id: _uuid.v4(),
       name: name,
@@ -33,7 +39,10 @@ class WorkoutNotifier extends _$WorkoutNotifier {
     state = [
       for (final workout in state)
         if (workout.id == id)
-          workout.copyWith(isCompleted: !workout.isCompleted, completedAt: workout.isCompleted ? null : DateTime.now())
+          workout.copyWith(
+            isCompleted: !workout.isCompleted,
+            completedAt: workout.isCompleted ? null : DateTime.now(),
+          )
         else
           workout,
     ];

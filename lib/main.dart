@@ -13,7 +13,9 @@ void main() async {
   final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
   runApp(
     ProviderScope(
-      overrides: [hasSeenOnboardingProvider.overrideWith((ref) => hasSeenOnboarding)],
+      overrides: [
+        hasSeenOnboardingProvider.overrideWith((ref) => hasSeenOnboarding),
+      ],
       child: const MyApp(),
     ),
   );
@@ -37,12 +39,17 @@ class MyApp extends ConsumerWidget {
           surface: Color(0xFF1A237E),
           onSurface: Colors.white,
         ),
-        appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF1A237E), elevation: 0),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1A237E),
+          elevation: 0,
+        ),
         scaffoldBackgroundColor: const Color(0xFF0D1344),
         cardTheme: CardThemeData(
           color: const Color(0xFF1A237E),
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         tabBarTheme: const TabBarThemeData(
           labelColor: Colors.white,
@@ -54,7 +61,10 @@ class MyApp extends ConsumerWidget {
           foregroundColor: Color(0xFF1A237E),
         ),
       ),
-      home: hasSeenOnboarding ? const WorkoutListScreen() : const OnboardingScreen(),
+      home:
+          hasSeenOnboarding
+              ? const WorkoutListScreen()
+              : const OnboardingScreen(),
     );
   }
 }

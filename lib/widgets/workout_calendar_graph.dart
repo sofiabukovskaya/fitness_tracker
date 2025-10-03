@@ -39,12 +39,15 @@ class WorkoutCalendarGraph extends HookConsumerWidget {
         counts[dateKey] = (counts[dateKey] ?? 0) + 1;
       }
       return counts;
-    }, [workouts]);
+    }, [workouts],);
 
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +65,12 @@ class WorkoutCalendarGraph extends HookConsumerWidget {
               ),
               Text(
                 'Last 30 days',
-                style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
+                ),
               ),
             ],
           ),
@@ -78,11 +86,14 @@ class WorkoutCalendarGraph extends HookConsumerWidget {
 
                 return Expanded(
                   child: Tooltip(
-                    message: '2 workout${2 != 1 ? 's' : ''} on ${index + 1}/${DateTime.now().month}',
+                    message:
+                        '2 workout${2 != 1 ? 's' : ''} on ${index + 1}/${DateTime.now().month}',
                     child: Container(
                       margin: const EdgeInsets.all(1),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(opacity),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(opacity),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

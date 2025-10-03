@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../enums/workout_type.dart';
+import '../../enums/workout_type.dart';
 
 part 'workout.freezed.dart';
 part 'workout.g.dart';
@@ -18,5 +18,6 @@ abstract class Workout with _$Workout {
     DateTime? completedAt,
   }) = _Workout;
 
-  factory Workout.fromJson(Map<String, dynamic> json) => _$WorkoutFromJson(json);
+  factory Workout.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutFromJson(json);
 }
