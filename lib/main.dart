@@ -1,20 +1,25 @@
-import 'package:fitness_tracker/providers/onboarding/onboarding_provider.dart';
-import 'package:fitness_tracker/screens/workout_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/constants.dart';
+import 'providers/onboarding/onboarding_provider.dart';
+import 'providers/auth/auth_provider.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/sign_in_screen.dart';
+import 'screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
+  final sh = await SharedPreferences.getInstance();
+  final hasSeenOnboarding = sh.get(hasOnboardingInitialized) as bool?;
 
-  final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
   runApp(
     ProviderScope(
       overrides: [
-        hasSeenOnboardingProvider.overrideWith((ref) => hasSeenOnboarding),
+        hasSeenOnboardingProvider.overrideWith(
+          (ref) => hasSeenOnboarding ?? false,
+        ),
       ],
       child: const MyApp(),
     ),
@@ -25,8 +30,9 @@ class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, ref) {
-    final hasSeenOnboarding = ref.read(hasSeenOnboardingProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasOnboardingSeen = ref.watch(hasSeenOnboardingProvider);
+    final user = ref.watch(authProvider);
 
     return MaterialApp(
       title: 'Fitness Tracker',
@@ -51,19 +57,16 @@ class MyApp extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        tabBarTheme: const TabBarThemeData(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white60,
-          indicatorColor: Colors.white,
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.white,
-          foregroundColor: Color(0xFF1A237E),
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorColor: Colors.white.withValues(alpha: 0.1),
+          backgroundColor: const Color(0xFF1A237E),
         ),
       ),
       home:
-          hasSeenOnboarding
-              ? const WorkoutListScreen()
+          hasOnboardingSeen
+              ? (user?.isAuthenticated == true
+                  ? const MainScreen()
+                  : const SignInScreen())
               : const OnboardingScreen(),
     );
   }

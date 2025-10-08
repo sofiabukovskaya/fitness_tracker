@@ -40,4 +40,4 @@ final class GetQuoteProvider
   }
 }
 
-String _$getQuoteHash() => r'7a9852a3f589baec6d052ca2a162efe7238a5d1f';
+String _$getQuoteHash() => r'e9eb097d9d62c5d80eae0fad2df7bce8e7cbd9b8';
