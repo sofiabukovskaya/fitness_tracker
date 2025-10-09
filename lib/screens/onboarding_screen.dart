@@ -1,6 +1,7 @@
+import 'package:fitness_tracker/core/config/router_config/router_names.dart';
 import 'package:fitness_tracker/core/constants.dart';
-import 'package:fitness_tracker/screens/workout_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,14 +37,15 @@ class OnboardingScreen extends StatelessWidget {
   }
 
   void _onDone(BuildContext context) async {
-    await _markOnboardingComplete();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const WorkoutListScreen()),
-    );
+    await _changeOnboardingInitialStatus();
+    if (!context.mounted) {
+      return;
+    }
+    context.goNamed(RouteNames.workoutList);
   }
 
-  Future<void> _markOnboardingComplete() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(hasOnboardingInitialized, true);
+  Future<void> _changeOnboardingInitialStatus() async {
+    final sh = await SharedPreferences.getInstance();
+    sh.setBool(hasOnboardingInitialized, true);
   }
 }

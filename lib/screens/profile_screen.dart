@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../core/config/router_config/router_names.dart';
 import '../models/workout/workout.dart';
 import '../providers/auth/auth_provider.dart';
 import '../providers/workout/workout_provider.dart';
@@ -7,7 +9,7 @@ import 'edit_profile_screen.dart';
 import 'settings_screen.dart';
 import 'notifications_screen.dart';
 import 'help_support_screen.dart';
-import 'sign_in_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
@@ -15,13 +17,35 @@ class ProfileScreen extends HookConsumerWidget {
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
     await ref.read(authProvider.notifier).signOut();
     if (context.mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const SignInScreen(),
-        ),
-            (route) => false,
-      );
+      context.goNamed(RouteNames.signIn);
     }
+  }
+
+  void _shareProfile(BuildContext context, WidgetRef ref) {
+    final user = ref.read(authProvider);
+    final workouts = ref.read(workoutProvider);
+
+    if (user == null) return;
+
+    final completedWorkouts = workouts.where((w) => w.isCompleted).length;
+    final inProgressWorkouts = workouts.where((w) => !(w.isCompleted)).length;
+
+    final uri = Uri(
+      scheme: 'https',
+      host: 'fitness-tracker-web-m7ia.vercel.app',
+      path: '/shared/profile',
+      queryParameters: {
+        'name': user.name,
+        'bio': user.bio ?? '',
+        'totalWorkouts': workouts.length.toString(),
+        'completed': completedWorkouts.toString(),
+        'inProgress': inProgressWorkouts.toString(),
+      },
+    );
+
+    SharePlus.instance.share(
+      ShareParams(text: 'Check out my fitness progress! ${uri.toString()}'),
+    );
   }
 
   @override
@@ -33,10 +57,16 @@ class ProfileScreen extends HookConsumerWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             floating: true,
             pinned: true,
-            title: Text('Profile'),
+            title: const Text('Profile'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.share),
+                onPressed: () => _shareProfile(context, ref),
+              ),
+            ],
           ),
           SliverToBoxAdapter(
             child: Column(
@@ -151,9 +181,7 @@ class ProfileScreen extends HookConsumerWidget {
                         ),
                         title: Text(
                           'Sign Out',
-                          style: TextStyle(
-                            color: theme.colorScheme.secondary,
-                          ),
+                          style: TextStyle(color: theme.colorScheme.secondary),
                         ),
                       ),
                     ],
@@ -172,16 +200,14 @@ class ProfileScreen extends HookConsumerWidget {
 class _StatsRow extends StatelessWidget {
   final List<Workout> workouts;
 
-  const _StatsRow({
-    required this.workouts,
-  });
+  const _StatsRow({required this.workouts});
 
   @override
   Widget build(BuildContext context) {
     final completedWorkouts =
-        workouts.where((w) => w.isCompleted).length;
+        workouts.where((w) => w.isCompleted ?? false).length;
     final inProgressWorkouts =
-        workouts.where((w) => !w.isCompleted).length;
+        workouts.where((w) => !w.isCompleted ?? false).length;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -231,10 +257,7 @@ class _StatItem extends StatelessWidget {
             color: theme.colorScheme.surface,
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            icon,
-            color: theme.colorScheme.primary,
-          ),
+          child: Icon(icon, color: theme.colorScheme.primary),
         ),
         const SizedBox(height: 8),
         Text(
@@ -270,13 +293,8 @@ class _ProfileMenuItem extends StatelessWidget {
     final theme = Theme.of(context);
     return ListTile(
       onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      leading: Icon(
-        icon,
-        color: theme.colorScheme.primary,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      leading: Icon(icon, color: theme.colorScheme.primary),
       title: Text(title),
       trailing: const Icon(Icons.chevron_right),
     );

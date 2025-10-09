@@ -1,13 +1,10 @@
+import 'package:fitness_tracker/core/config/router_config/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants.dart';
 import 'providers/onboarding/onboarding_provider.dart';
-import 'providers/auth/auth_provider.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/sign_in_screen.dart';
-import 'screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +28,10 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasOnboardingSeen = ref.watch(hasSeenOnboardingProvider);
-    final user = ref.watch(authProvider);
 
-    return MaterialApp(
+    final router = ref.watch(routerProvider);
+
+    return MaterialApp.router(
       title: 'Fitness Tracker',
       theme: ThemeData(
         useMaterial3: true,
@@ -62,12 +59,9 @@ class MyApp extends ConsumerWidget {
           backgroundColor: const Color(0xFF1A237E),
         ),
       ),
-      home:
-          hasOnboardingSeen
-              ? (user?.isAuthenticated == true
-                  ? const MainScreen()
-                  : const SignInScreen())
-              : const OnboardingScreen(),
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
+      routerDelegate: router.routerDelegate,
     );
   }
 }

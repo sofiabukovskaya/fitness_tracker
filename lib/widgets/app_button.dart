@@ -33,6 +33,9 @@ class AppButton extends HookWidget {
           if (onPressed != null) {
             await onPressed!();
           }
+          if(!context.mounted)   {
+            return;
+          }
           isLoading.value = false;
         },
         style: FilledButton.styleFrom(

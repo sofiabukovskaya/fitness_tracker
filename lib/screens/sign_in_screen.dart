@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../core/config/router_config/router_names.dart';
 import '../providers/auth/auth_provider.dart';
 import '../widgets/app_button.dart';
-import 'main_screen.dart';
 
 class SignInScreen extends HookConsumerWidget {
   const SignInScreen({super.key});
@@ -61,9 +62,7 @@ class SignInScreen extends HookConsumerWidget {
           .signIn(emailController.text, passwordController.text);
 
       if (success && context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-        );
+       context.goNamed(RouteNames.workoutList);
       } else if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -166,7 +165,7 @@ class SignInScreen extends HookConsumerWidget {
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
+                        context.go(RouteNames.signUp);
                       },
                       child: Text.rich(
                         TextSpan(
